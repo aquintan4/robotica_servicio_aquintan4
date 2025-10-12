@@ -102,6 +102,7 @@ La solución implementada consiste en iterar sobre la cola de objetivos desde el
 
 De este modo, se descartan los objetivos intermedios redundantes, permitiendo que el robot se desplace en línea recta entre los puntos relevantes siempre que el control de movimiento sea suficientemente preciso.Esta estrategia contribuye a reducir el efecto del ruido en el pilotaje y a evitar trayectorias en zigzag, logrando un desplazamiento más fluido y eficiente.
 
+[Ver resultado](https://www.dropbox.com/scl/fi/nr7f3mcp001b5icgbgsab/p1_servicio_final.mp4?dl=0&rlkey=q45lztcwn7yqhw07fb3bumeau&st=x7nzt8p3)
 
 
 
