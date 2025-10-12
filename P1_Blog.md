@@ -87,9 +87,21 @@ Para obtener este mapa de celdillas lo primero que hago es añadir filas y colum
 ### 4. BSA
 Sobre la matriz calculada en el paso anterior utilizo el algoritmo BSA, para barrer toda la superficie posible. Esta parte consiste en: dado el mapa de celdillas y la posición inicial del robot.
 1. Voy marcando las celdillas vecinas libres respecto a la celdilla actual como puntos de retorno si estos están libres; los ignoro en caso de estar ocupada o de ya estar visitada.
-2. De todos los puntos de retorno elijo una dirección para avanzar y me ziño a ella (realizando el paso 1 en cada paso) hasta que me encuentre con un obstáculo o una celdilla visitada, entonces cambio a la sigiente dirección disponible
-3.  Continuo con los pasos anteriores hasta finalmente no tener disponible ninguna de las direcciónes. En este momento se marca como punto crítico ese punto y se lanza una búsqueda en anchura (BFS) para encontrar el punto de retorno más cercano. Se realizan estos pasos hasta que no encuentre ningún punto de retorno.
+3. De todos los puntos de retorno elijo una dirección para avanzar y me ziño a ella (realizando el paso 1 en cada paso) hasta que me encuentre con un obstáculo o una celdilla visitada, entonces cambio a la sigiente dirección disponible
+4.  Continuo con los pasos anteriores hasta finalmente no tener disponible ninguna de las direcciónes. En este momento se marca como punto crítico ese punto y se lanza una búsqueda en anchura (BFS) para encontrar el punto de retorno más cercano.
+5. Se itera sobre estos pasos hasta que no encuentre ningún punto de retorno.
 
-Esta parte ha sido bastante engañosa a la hora de programar, ya que he comenzado utilizando espirales, sin embargo a la hora de visualizar como se está calculando el camino paso a paso y visualizando no me parecía la forma más eficiente. Por lo tanto cambié completamente el enfoque e hice que el robot avanzara por prioridad de direcciones de forma que siempre que pueda ir a la dirección más prioritaria, en caso de no poder utilizaría la segunda dirección más prioritaria y así sucesivamente. Esto se traduce en unos barridos sistematicos de derecha a izquierda (o arriba a abajo según las prioridades elegidas) de forma que se minimizan bastante los puntos críticos y la expansión se nota bastante eficiente. 
+Esta parte ha sido bastante engañosa a la hora de programar, ya que he comenzado utilizando espirales, sin embargo a la hora de visualizar como se está calculando el camino paso a paso y visualizando no me parecía la forma más eficiente. Por lo tanto cambié completamente el enfoque e hice que el robot avanzara por prioridad de direcciones de forma que siempre que pueda ir a la dirección más prioritaria, en caso de no poder utilizaría la segunda dirección más prioritaria y así respectivamente. Esto se traduce en unos barridos sistematicos de derecha a izquierda (o arriba a abajo según las prioridades elegidas) de forma que se minimizan bastante los puntos críticos y la expansión en el visualizar parece bastante eficiente.
+
+Sin embargo, el verdadero cuello de botella ocurre en el control del robot, concretamente en los giros. Entonces esta forma de barrer celdillas reduce significativamente los puntos críticos pero añade una cantidad de giros mucho mayor, haciendo que haya muchas detenciones para rectificar la dirección y se traduzca en un pilotaje mucho más lento y tedioso. Por lo que finalmente decidí volver a las espirales.
+
+### 5. Pilotaje reactivo
+He tratado de reducir al mínimo las oscilaciones para asegurarme que viajo lo más recto posible a traves de la celdillas, esto se ha traducido en dos PDs para la velocidad angular, uno cuando me encuentro desorientado respecto al objetivo (en la que la velocidad lineal es 0) y otro cuando me encuentro orientado respecto al punto objetivo (en el que la velocidad lineal depende de la distancia al objetivo y la orientación a este).
+Sin embargo por más que ajustara estos PDs o la lógica seguía enfrentandome a un gran problema de oscilaciones. Que se traducía en un zig-zag constante, en la que la reorientación no solo "ocurría en las esquinas de las espirales" si no en mitad de trayectorias rectas.
+La solución implementada consiste en iterar sobre la cola de objetivos desde el objetivo actual hasta identificar el siguiente punto que no se encuentre alineado con la trayectoria.
+
+De este modo, se descartan los objetivos intermedios redundantes, permitiendo que el robot se desplace en línea recta entre los puntos relevantes siempre que el control de movimiento sea suficientemente preciso.Esta estrategia contribuye a reducir el efecto del ruido en el pilotaje y a evitar trayectorias en zigzag, logrando un desplazamiento más fluido y eficiente.
+
+
 
 
