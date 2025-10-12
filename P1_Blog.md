@@ -63,3 +63,33 @@ cuantos más puntos mejor, ya que en todos ellos habrá algún tipo de ruido y c
 
 Notamos que para obtener nuestras incógnitas debemos realizar una optimización de un sistema compatible indeterminado, en mi caso utilizaré la optimización por mínimos cuadrados, concretamente la implementación
 de la biblioteca numpy.
+
+### 2. Dilatación de los obstáculos
+Este paso es importante para hacer que nuestro robot no se choque con ningún obstáculo a la hora de hacer la ruta, por lo tanto debemos expandirlo el radio de nuestro robot más una distancia de seguridad. En mi caso he utilizado:
+```python3
+_, bin_map = cv.threshold(img, 1, 255, cv.THRESH_BINARY)
+dist = cv.distanceTransform(bin_map, distanceType=cv.DIST_L2, maskSize=5)
+R = radio_del_robot_en_px + margen_de_seguridad_en_px
+inflated_obstacles = (dist <= R).astype(np.uint8) * 255
+inflated_map = np.where(inflated_obstacles > 0, 0, 255).astype(np.uint8)
+```
+1. Usamos distanceTransform para calcular en cada píxel de espacio libre, la distancia euclídea (L2) al obstáculo más cercano (un píxel con valor 0).
+2. Marcamos como obstáculo inflado todo píxel de espacio libre cuya distancia al obstáculo real sea ≤ R.
+3. Construimos el mapa inflado final: los píxeles marcados en inflated_obstacles pasan a 0 (ocupado); el resto a 255 (libre)
+
+Esta transformación a priori resulta más extraña que usar directamente una función para dilatar, o pasar un kernel de forma manual por la imagen. Sin embargo he probado todas estas transformaciones y el resultado es muy asimetrico, ya que hay zonas que están extremadamente dilatadas y zonas que no se han dilatado lo suficiente.
+
+### 3. Obtener mapa de celdillas a partir de nuestro mapa con los obstáculos dilatados
+Esta etapa consiste en definir el mapa de obstaculos en celdillas en el que aplicaremos el algoritmo de BSA. El tamaño de las celdillas debe de ser igual al diametro de nuestro robot y menos una distancia pequeña, de forma que aunque pasemos por algunos puntos varias veces, aseguramos que no haya huecos entre celdillas (cosa que ocurriría si la celdilla fuera más grande que el díametro del robot).
+
+Para obtener este mapa de celdillas lo primero que hago es añadir filas y columnas a nuestra matriz de forma que se pueda usar el kernel con el tamaño de celdilla ya mencionado. Luego iteraremos sobre este mapa dilatado con nuestro kernel e iremos construyendo una matriz más pequeña en la que marcaremos cada celdilla como ocupada si en la posición del kernel hay algun obtaculo y libre si en este no hay ninguno.
+
+### 4. BSA
+Sobre la matriz calculada en el paso anterior utilizo el algoritmo BSA, para barrer toda la superficie posible. Esta parte consiste en: dado el mapa de celdillas y la posición inicial del robot.
+1. Voy marcando las celdillas vecinas libres respecto a la celdilla actual como puntos de retorno si estos están libres; los ignoro en caso de estar ocupada o de ya estar visitada.
+2. De todos los puntos de retorno elijo una dirección para avanzar y me ziño a ella (realizando el paso 1 en cada paso) hasta que me encuentre con un obstáculo o una celdilla visitada, entonces cambio a la sigiente dirección disponible
+3.  Continuo con los pasos anteriores hasta finalmente no tener disponible ninguna de las direcciónes. En este momento se marca como punto crítico ese punto y se lanza una búsqueda en anchura (BFS) para encontrar el punto de retorno más cercano. Se realizan estos pasos hasta que no encuentre ningún punto de retorno.
+
+Esta parte ha sido bastante engañosa a la hora de programar, ya que he comenzado utilizando espirales, sin embargo a la hora de visualizar como se está calculando el camino paso a paso y visualizando no me parecía la forma más eficiente. Por lo tanto cambié completamente el enfoque e hice que el robot avanzara por prioridad de direcciones de forma que siempre que pueda ir a la dirección más prioritaria, en caso de no poder utilizaría la segunda dirección más prioritaria y así sucesivamente. Esto se traduce en unos barridos sistematicos de derecha a izquierda (o arriba a abajo según las prioridades elegidas) de forma que se minimizan bastante los puntos críticos y la expansión se nota bastante eficiente. 
+
+
