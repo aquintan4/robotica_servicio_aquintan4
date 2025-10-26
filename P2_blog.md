@@ -66,4 +66,6 @@ Aunque la idea era buena sobre el papel, en la práctica resultó poco robusta. 
 
 Por eso acabé cambiando el enfoque a algo más simple y estable: basar la unicidad en la posición. En lugar de comparar imágenes, lo que hago es registrar las coordenadas de cada nuevo superviviente en el mundo y comprobar si ya existe otro punto cercano (dentro de una distancia definida, por ejemplo 3.5 metros). Si no hay ninguno, se guarda como nuevo; si ya hay uno próximo, se considera la misma persona. Este método, aunque menos sofisticado visualmente, es mucho más fiable en simulación, porque aprovecha la información de posición y orientación del dron, que es estable y precisa.
 
+# [RESULTADO](https://www.dropbox.com/scl/fi/k8snpndt30o5jv0cz21p5/p2_servicio_final.mp4?rlkey=irw8crtfj9djvs1w5tmb84dxh&st=satuwzps&dl=0)
+
 
