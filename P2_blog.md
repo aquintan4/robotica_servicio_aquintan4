@@ -22,4 +22,3 @@ La trayectoria se define a partir de:
 
 El resultado es una cola de puntos objetivo (deque), que el dron recorrerá de forma ordenada para cubrir el área. En esta parte me ha sido muy util hacer pruebas con el módulo turtle de python:
 
-
