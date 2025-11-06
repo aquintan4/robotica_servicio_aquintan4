@@ -17,8 +17,9 @@ este rayo representara el ángulo 0 (Es decir el angulo 0 debería ser el del me
 de la mitad del angulo entre el mínimo y el máximo, de esta forma sabemos si las medidas están en el centro, derecha o izquierda simplemente comprobando el signo del angulo o viendo si este es 0.
 
 Lo siguiente que quiero hacer es encontrar un sitio en el que aparcar:
-* Lo primero que necesitamos saber es si vamos a aparcar a la izquierda o a la derecha que en nuestro entorno simulado dependerá de si estamos subiendo o bajando la calle. Saber el lugar es necesario para arrimarnos a ese lateral y evitar que el coche
-quede fuera del sitio
+* Lo primero que necesitamos saber es si vamos a aparcar a la izquierda o a la derecha que en nuestro entorno simulado dependerá de si estamos subiendo o bajando la calle. Saber el lugar es necesario para arrimarnos a ese lateral y evitar que el coche quede fuera del sitio. Entonces asumiendo que solo podemos aparcar en la hilera de coches (con obstaculos en ambos lados) haremos una media de los valores con sentido del laser de la derecha y de la izquierda. Y veremos cual tiene los obstáculos más cercanos.
+
+* 
 
 
 
