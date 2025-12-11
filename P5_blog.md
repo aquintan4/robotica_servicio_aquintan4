@@ -59,4 +59,4 @@ Para alcanzar estas zonas de manera óptima, he implementado un algoritmo de **B
 
 Una vez que el algoritmo de BFS identifica la celda de la frontera más cercana, el movimiento se ejecuta a través de un control proporcial del error.
 Se emplean dos controladores **Proporcionales** para comandar la velocidad lineal y angular del robot.
-# [RESULTADO](https://www.dropbox.com/scl/fi/pb30qqw8k4opckqup3wx4/Laser_mapping-2025-12-11_14.15.49.mp4?rlkey=ike7j82ijrb5e6wo11riglk0n&st=8kc6uk9j&dl=0)
+# [RESULTADO](https://www.dropbox.com/scl/fi/gwzv7dstku3dcsq5hd7rn/Laser_mapping-2025-12-11_14.15.49.mp4?rlkey=rgw9k8n73oaq929ctgy9pslu5&st=ndz645xn&dl=0)
